@@ -1,0 +1,23 @@
+{
+    "name": "xiaobai-upload",
+    "version": "0.0.1",
+    "description": "upload to xiaobai store",
+    "main": "index.js",
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/Xiaobai-World-Team/upload-to-app-store.git"
+    },
+    "keywords": [
+        "xiaobai",
+        "upload"
+    ],
+    "author": "xiaobai-world-team",
+    "license": "MIT",
+    "bugs": {
+        "url": "https://github.com/Xiaobai-World-Team/upload-to-app-store/issues"
+    },
+    "homepage": "https://github.com/Xiaobai-World-Team/upload-to-app-store#readme"
+}
