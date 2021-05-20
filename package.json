@@ -1,9 +1,11 @@
 {
-    "name": "xiaobai-upload",
-    "version": "0.0.1",
+    "name": "@xiaobai-world/upload",
+    "version": "0.0.7",
     "description": "upload to xiaobai store",
     "main": "index.js",
+    "bin": "./index.js",
     "scripts": {
+        "start": "node index",
         "test": "echo \"Error: no test specified\" && exit 1"
     },
     "repository": {
