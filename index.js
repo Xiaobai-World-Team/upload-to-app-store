@@ -1,9 +1,21 @@
 #!/usr/bin/env node
 
-console.log('hello world')
-const pkg = require('./package.json')
-console.log(pkg)
-console.log(process.env.PWD)
+const { execSync } = require('child_process')
+const os = require('os')
+const platform = os.platform()
+
+function ab2str(buf) {
+    return String.fromCharCode.apply(null, new Uint8Array(buf));
+}
+
+let ls;
+if (platform.startsWith('win')) {
+    ls = execSync("dir /S /B")
+} else {
+    ls = execSync("ls -R ./dist |awk '{print i$0}' i=`pwd`'/'")
+}
+
+console.log(ab2str(ls.buffer).split(/[\r\n]/))
 
 
 /**
