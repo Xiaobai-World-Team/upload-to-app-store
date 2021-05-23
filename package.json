@@ -1,6 +1,7 @@
 {
     "name": "@xiaobai-world/upload",
-    "version": "0.0.7",
+    "appName": "xiaobai test",
+    "version": "0.0.22",
     "description": "upload to xiaobai store",
     "main": "index.js",
     "bin": "./index.js",
@@ -21,5 +22,9 @@
     "bugs": {
         "url": "https://github.com/Xiaobai-World-Team/upload-to-app-store/issues"
     },
-    "homepage": "https://github.com/Xiaobai-World-Team/upload-to-app-store#readme"
+    "homepage": "https://github.com/Xiaobai-World-Team/upload-to-app-store#readme",
+    "dependencies": {
+        "axios": "^0.21.1",
+        "form-data": "^4.0.0"
+    }
 }
