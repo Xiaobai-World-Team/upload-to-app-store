@@ -1,7 +1,6 @@
 {
     "name": "@xiaobai-world/upload",
-    "appName": "xiaobai test",
-    "version": "0.0.32",
+    "version": "0.0.35",
     "description": "upload to xiaobai store",
     "main": "index.js",
     "bin": "./index.js",

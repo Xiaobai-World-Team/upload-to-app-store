@@ -2,11 +2,14 @@
 
 const { default: axios } = require("axios");
 const FormData = require("form-data");
-const package = require("./package.json");
+const path = require('path')
+const package = require(path.join(process.env.PWD, 'package.json'));
+
+console.log('@xiaobai-world/uplaod version:', require('./package.json').version)
+
 const fs = require('fs')
 const { promisify } = require('util')
 const stat = promisify(fs.stat)
-const path = require('path')
 const { execSync } = require('child_process')
 const distPath = process.env.PWD + '/dist'
 
@@ -78,7 +81,7 @@ async function start() {
         await upload(file)
     }
 
-    const faviconIdx = fileList.findIndex(file => /favicon.*(svg|png|gif)$/.test(file.baseName))
+    const faviconIdx = fileList.findIndex(file => /favicon.*(svg|png|gif|ico)$/.test(file.baseName))
 
     if (faviconIdx < 0) {
         throw new Error('favicon icon not found. please ensure favicon.svg(also can be png,gif) in src and index.html included it.')
