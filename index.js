@@ -60,23 +60,43 @@ async function start() {
     })
 
     // get upload path
-    const path = await axios.post('http://localhost:3001/store/getBasePath', {
+    const pathRes = await axios.post('http://localhost:3001/store/getBasePath', {
         appVersion: package.version,
         appName: package.appName
     })
 
-    console.log('app path', path.data)
+    console.log('app path', pathRes.data)
 
     // npm run build
-    const cmd = `npm run build -- --base=${path.data}/`
-    const execRes = execSync(cmd)
-    console.log('done', execRes.toString())
+    const cmd = `npm run build -- --logLevel=all --manifest --base=${pathRes.data}/`
+    const execRes = execSync(cmd).toString()
+    console.log('done', execRes)
 
     const fileList = readDir(distPath, []);
 
     for (let file of fileList) {
         await upload(file)
     }
+
+    const faviconIdx = fileList.findIndex(file => /favicon.*(svg|png|gif)$/.test(file.baseName))
+
+    if (faviconIdx < 0) {
+        throw new Error('favicon icon not found. please ensure favicon.svg(also can be png,gif) in src and index.html included it.')
+    }
+
+    // check entry
+    const mainifest = require(path.join(distPath, 'manifest.json'))
+    await axios.post('http://localhost:3001/store/setTestAppEntry', {
+        // report favicon.path, will be used as the icon of the application
+        favicon: path.join(pathRes.data, fileList[faviconIdx].relativePath),
+        // js entry
+        jsEntry: path.join(pathRes.data, mainifest['index.html'].file),
+        css: mainifest['index.html'].css.map(p => path.join(pathRes.data, p)),
+        appVersion: package.version,
+        appName: package.appName
+    })
+
+    console.log('all successed.')
 }
 
 start();
