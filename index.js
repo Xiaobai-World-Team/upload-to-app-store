@@ -1,15 +1,14 @@
 #!/usr/bin/env node
 
+console.log('@xiaobai-world/uplaod version:', require('./package.json').version)
+
 const { default: axios } = require("axios");
 const FormData = require("form-data");
 const path = require('path')
 const package = require(path.join(process.env.PWD, 'package.json'));
 
-console.log('@xiaobai-world/uplaod version:', require('./package.json').version)
 
 const fs = require('fs')
-const { promisify } = require('util')
-const stat = promisify(fs.stat)
 const { execSync } = require('child_process')
 const distPath = process.env.PWD + '/dist'
 
@@ -37,12 +36,12 @@ function readDir(dir, arr) {
 
 async function upload(file) {
     let form = new FormData()
+    form.append('appVersion', package.version)
+    form.append('packageName', package.name)
+    form.append('appName', package.appName)
     form.append('baseName', file.baseName)
     form.append('relativePath', file.relativePath)
-    form.append('appVersion', package.version)
-    form.append('packageName', package.version)
-    form.append('appName', package.appName)
-    form.append('description', package.description)
+    form.append('description', package.description ? package.description : 'the description field of package.json has not been set')
     form.append('type', file.type)
     form.append('size', file.size)
     if (file.type === 'file') {
@@ -68,11 +67,12 @@ async function start() {
         appName: package.appName
     })
 
-    console.log('app path', pathRes.data)
-
     // npm run build
     const cmd = `npm run build -- --logLevel=all --manifest --base=${pathRes.data}/`
-    const execRes = execSync(cmd).toString()
+    const execRes = execSync(cmd, {
+        cwd: process.env.PWD
+    }).toString()
+
     console.log('done', execRes)
 
     const fileList = readDir(distPath, []);
@@ -99,7 +99,6 @@ async function start() {
         appName: package.appName
     })
 
-    console.log('all successed.')
 }
 
-start();
+start()
