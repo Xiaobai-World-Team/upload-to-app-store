@@ -36,6 +36,7 @@ function readDir(dir, arr) {
 
 async function upload(file) {
     let form = new FormData()
+    console.log(package.version, package.name, package.title)
     form.append('version', package.version)
     form.append('name', package.name)
     form.append('title', package.title ? package.title : package.name)
@@ -67,8 +68,11 @@ async function start() {
         name: package.name
     })
 
+    console.log('base', pathRes.data)
+
     // npm run build
     const cmd = `npm run build -- --logLevel=all --manifest --base=${pathRes.data}/`
+    console.log('cmd is:', cmd)
     const execRes = execSync(cmd, {
         cwd: process.env.PWD
     }).toString()
