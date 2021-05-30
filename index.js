@@ -36,8 +36,8 @@ function readDir(dir, arr) {
 
 async function upload(file) {
     let form = new FormData()
-    form.append('appVersion', package.version)
-    form.append('appName', package.name)
+    form.append('version', package.version)
+    form.append('name', package.name)
     form.append('title', package.title ? package.title : package.name)
     form.append('baseName', file.baseName)
     form.append('relativePath', file.relativePath)
@@ -57,14 +57,14 @@ async function start() {
 
     // clear the file list of the test enviroment
     await axios.post('http://localhost:3001/store/cleanTestApp', {
-        appVersion: package.version,
-        appName: package.appName
+        version: package.version,
+        name: package.name
     })
 
     // get upload path
     const pathRes = await axios.post('http://localhost:3001/store/getBasePath', {
-        appVersion: package.version,
-        appName: package.appName
+        version: package.version,
+        name: package.name
     })
 
     // npm run build
@@ -95,8 +95,9 @@ async function start() {
         // js entry
         jsEntry: path.join(pathRes.data, mainifest['index.html'].file),
         css: mainifest['index.html'].css.map(p => path.join(pathRes.data, p)),
-        appVersion: package.version,
-        appName: package.appName
+        version: package.version,
+        name: package.name,
+        title: package.title ? package.title : package.name
     })
 
 }
