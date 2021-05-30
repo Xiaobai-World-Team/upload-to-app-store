@@ -37,8 +37,8 @@ function readDir(dir, arr) {
 async function upload(file) {
     let form = new FormData()
     form.append('appVersion', package.version)
-    form.append('packageName', package.name)
-    form.append('appName', package.appName)
+    form.append('appName', package.name)
+    form.append('title', package.title ? package.title : package.name)
     form.append('baseName', file.baseName)
     form.append('relativePath', file.relativePath)
     form.append('description', package.description ? package.description : 'the description field of package.json has not been set')
