@@ -57,15 +57,22 @@ async function upload(file) {
 async function start() {
 
     // clear the file list of the test enviroment
-    await axios.post('http://localhost:3001/store/cleanTestApp', {
-        version: package.version,
-        name: package.name
-    })
+    try {
+        await axios.post('http://localhost:3001/store/cleanTestApp', {
+            version: package.version,
+            name: package.name
+        })
+    } catch (e) {
+        console.error(e)
+    }
 
     // get upload path
     const pathRes = await axios.post('http://localhost:3001/store/getBasePath', {
         version: package.version,
         name: package.name
+    }).catch(e => {
+        console.error(e)
+        throw new Error(e)
     })
 
     console.log('base', pathRes.data)
@@ -102,6 +109,8 @@ async function start() {
         version: package.version,
         name: package.name,
         title: package.title ? package.title : package.name
+    }).catch(e => {
+        console.log(e)
     })
 
 }
