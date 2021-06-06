@@ -36,6 +36,12 @@ function readDir(dir, arr) {
 
 async function upload(file) {
     let form = new FormData()
+    if (!package.name) {
+        throw new Error('Please ensure package.json includes field of name')
+    }
+    if (!package.version) {
+        throw new Error('Please ensure package.json includes field of version')
+    }
     console.log(package.version, package.name, package.title)
     form.append('version', package.version)
     form.append('name', package.name)
@@ -48,9 +54,13 @@ async function upload(file) {
     if (file.type === 'file') {
         form.append('file', fs.createReadStream(file.fullPath))
     }
-    const res = await axios.post('http://localhost:3001/store/upload', form, {
-        headers: form.getHeaders()
-    })
+    try {
+        await axios.post('http://localhost:3001/store/upload', form, {
+            headers: form.getHeaders()
+        })
+    } catch (e) {
+        console.error(e.response.data)
+    }
     console.log(`upload success: ${file.relativePath}`)
 }
 
@@ -63,17 +73,21 @@ async function start() {
             name: package.name
         })
     } catch (e) {
-        console.error(e)
+        console.error(e.response.data)
+        return
     }
 
     // get upload path
-    const pathRes = await axios.post('http://localhost:3001/store/getBasePath', {
-        version: package.version,
-        name: package.name
-    }).catch(e => {
-        console.error(e)
-        throw new Error(e)
-    })
+    let pathRes;
+    try {
+        await axios.post('http://localhost:3001/store/getBasePath', {
+            version: package.version,
+            name: package.name
+        })
+    } catch (e) {
+        console.error(e.response.data)
+        return
+    }
 
     console.log('base', pathRes.data)
 
@@ -100,18 +114,20 @@ async function start() {
 
     // check entry
     const mainifest = require(path.join(distPath, 'manifest.json'))
-    await axios.post('http://localhost:3001/store/setTestAppEntry', {
-        // report favicon.path, will be used as the icon of the application
-        favicon: path.join(pathRes.data, fileList[faviconIdx].relativePath),
-        // js entry
-        jsEntry: path.join(pathRes.data, mainifest['index.html'].file),
-        css: mainifest['index.html'].css.map(p => path.join(pathRes.data, p)),
-        version: package.version,
-        name: package.name,
-        title: package.title ? package.title : package.name
-    }).catch(e => {
-        console.log(e)
-    })
+    try {
+        await axios.post('http://localhost:3001/store/setTestAppEntry', {
+            // report favicon.path, will be used as the icon of the application
+            favicon: path.join(pathRes.data, fileList[faviconIdx].relativePath),
+            // js entry
+            jsEntry: path.join(pathRes.data, mainifest['index.html'].file),
+            css: mainifest['index.html'].css.map(p => path.join(pathRes.data, p)),
+            version: package.version,
+            name: package.name,
+            title: package.title ? package.title : package.name
+        })
+    } catch (e) {
+        console.error(e.response.data)
+    }
 
 }
 
