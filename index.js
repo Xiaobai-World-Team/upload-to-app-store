@@ -81,7 +81,7 @@ async function start() {
     // get upload path
     let pathRes;
     try {
-        await axios.post('http://localhost:3001/store/getBasePath', {
+        pathRes = await axios.post('http://localhost:3001/store/getBasePath', {
             version: package.version,
             name: package.name
         })
