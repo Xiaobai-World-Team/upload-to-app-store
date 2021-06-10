@@ -36,12 +36,6 @@ function readDir(dir, arr) {
 
 async function upload(file) {
     let form = new FormData()
-    if (!package.name) {
-        throw new Error('Please ensure package.json includes field of name')
-    }
-    if (!package.version) {
-        throw new Error('Please ensure package.json includes field of version')
-    }
     console.log(package.version, package.name, package.title)
     form.append('version', package.version)
     form.append('name', package.name)
@@ -65,6 +59,13 @@ async function upload(file) {
 }
 
 async function start() {
+
+    if (!package.name) {
+        throw new Error('Please ensure package.json includes field of name')
+    }
+    if (!package.version) {
+        throw new Error('Please ensure package.json includes field of version')
+    }
 
     // clear the file list of the test enviroment
     try {
