@@ -104,7 +104,12 @@ async function start() {
     const fileList = readDir(distPath, []);
 
     for (let file of fileList) {
-        await upload(file)
+        try {
+            console.log('upload file', file)
+            await upload(file)
+        } catch (e) {
+            console.error(e.response.data)
+        }
     }
 
     const faviconIdx = fileList.findIndex(file => /favicon.*(svg|png|gif|ico)$/.test(file.baseName))
