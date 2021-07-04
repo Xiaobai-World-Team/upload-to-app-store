@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 //
 const chalk = require("chalk");
+const utils = require("./utils");
 
 try {
   console.log(
@@ -8,12 +9,7 @@ try {
     require("./package.json").version
   );
 } catch (e) {
-  console.log(
-    chalk.red(
-      `You must use this command at the root of the "vite" project\n请在 "vite" 工程根目录使用该命令`
-    )
-  );
-  return;
+  console.warn(`You must use this command at the root of the "vite" project`);
 }
 
 const { default: axios } = require("axios");
@@ -68,7 +64,10 @@ async function uploadFile(file) {
   }
   try {
     await axios.post("http://localhost:3001/store/upload", form, {
-      headers: form.getHeaders(),
+      headers: {
+        ...form.getHeaders(),
+        ...utils.getAxiosHeader(),
+      },
     });
   } catch (e) {
     console.error(e.response.data);
@@ -76,7 +75,7 @@ async function uploadFile(file) {
   console.log(`upload success: ${file.relativePath}`);
 }
 
-async function startUpload() {
+async function buildAndUpload() {
   if (!package.name) {
     throw new Error("Please ensure package.json includes field of name");
   }
@@ -86,22 +85,38 @@ async function startUpload() {
 
   // clear the file list of the test enviroment
   try {
-    await axios.post("http://localhost:3001/store/cleanTestApp", {
-      version: package.version,
-      name: package.name,
-    });
+    await axios.post(
+      "http://localhost:3001/store/cleanTestApp",
+      {
+        version: package.version,
+        name: package.name,
+      },
+      {
+        headers: {
+          ...utils.getAxiosHeader(),
+        },
+      }
+    );
   } catch (e) {
-    console.error(e.response.data);
+    console.error(e);
     return;
   }
 
   // get upload path
   let pathRes;
   try {
-    pathRes = await axios.post("http://localhost:3001/store/getBasePath", {
-      version: package.version,
-      name: package.name,
-    });
+    pathRes = await axios.post(
+      "http://localhost:3001/store/getBasePath",
+      {
+        version: package.version,
+        name: package.name,
+      },
+      {
+        headers: {
+          ...utils.getAxiosHeader(),
+        },
+      }
+    );
   } catch (e) {
     console.error(e.response.data);
     return;
@@ -142,19 +157,27 @@ async function startUpload() {
   // check entry
   const mainifest = require(path.join(distPath, "manifest.json"));
   try {
-    await axios.post("http://localhost:3001/store/setTestAppEntry", {
-      // report favicon.path, will be used as the icon of the application
-      favicon: path.join(pathRes.data, fileList[faviconIdx].relativePath),
-      // js entry
-      jsEntry: path.join(pathRes.data, mainifest["index.html"].file),
-      css: mainifest["index.html"].css.map((p) => path.join(pathRes.data, p)),
-      version: package.version,
-      name: package.name,
-      title: package.title ? package.title : package.name,
-    });
+    await axios.post(
+      "http://localhost:3001/store/setTestAppEntry",
+      {
+        // report favicon.path, will be used as the icon of the application
+        favicon: path.join(pathRes.data, fileList[faviconIdx].relativePath),
+        // js entry
+        jsEntry: path.join(pathRes.data, mainifest["index.html"].file),
+        css: mainifest["index.html"].css.map((p) => path.join(pathRes.data, p)),
+        version: package.version,
+        name: package.name,
+        title: package.title ? package.title : package.name,
+      },
+      {
+        headers: {
+          ...utils.getAxiosHeader(),
+        },
+      }
+    );
   } catch (e) {
     console.error(e.response.data);
   }
 }
 
-module.exports = { startUpload };
+module.exports = { buildAndUpload };

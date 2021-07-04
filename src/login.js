@@ -4,10 +4,17 @@ const chalk = require("chalk");
 const { base } = require("./const");
 const fs = require("fs");
 const path = require("path");
+const { getHomeDir, getAxiosHeader } = require("./utils");
 
 async function login() {
   console.log(chalk.green("Logining in..."));
-  const user = (await axios.get(`${base}/user/info`)).data;
+  const user = (await axios.get(`${base}/user/info`),
+  {
+    headers: {
+      ...getAxiosHeader(),
+    },
+  }).data;
+
   if (user && user.email) {
     return user;
   }
@@ -31,38 +38,35 @@ async function login() {
     .catch((e) => {
       return e.response;
     });
+
   if (login.status !== 201) {
-    console.error(login.data.message);
-    e;
-    return;
+    return null;
   }
-  const dir = path.join(process.env.HOME, ".xiaobai-world");
+
   const cookie = login.headers["set-cookie"][0].split(";")[0];
-  try {
-    fs.mkdirSync(dir);
-  } catch (e) {}
+
   fs.writeFileSync(
-    path.join(dir, "config.json"),
+    path.join(getHomeDir(), "config.json"),
     JSON.stringify(
       {
-        cookie,
+        Cookie: cookie,
       },
       null,
       2
     )
   );
+
   const userRes = (
     await axios.get(`${base}/user/info`, {
       headers: {
         "User-Agent": "xiaobai-world/upload-to-app-store",
-        Cookie: cookie,
+        ...getAxiosHeader(),
       },
     })
   ).data;
 
-  console.log("userRes", userRes);
   if (!userRes.email) {
-    throw new Error("login failed.");
+    return null;
   }
   return userRes;
 }
