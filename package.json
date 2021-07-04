@@ -1,29 +1,31 @@
 {
-    "name": "@xiaobai-world/upload",
-    "version": "0.0.60",
-    "description": "upload to xiaobai store",
-    "main": "index.js",
-    "bin": "./index.js",
-    "scripts": {
-        "start": "node index",
-        "test": "echo \"Error: no test specified\" && exit 1"
-    },
-    "repository": {
-        "type": "git",
-        "url": "git+https://github.com/Xiaobai-World-Team/upload-to-app-store.git"
-    },
-    "keywords": [
-        "xiaobai",
-        "upload"
-    ],
-    "author": "xiaobai-world-team",
-    "license": "MIT",
-    "bugs": {
-        "url": "https://github.com/Xiaobai-World-Team/upload-to-app-store/issues"
-    },
-    "homepage": "https://github.com/Xiaobai-World-Team/upload-to-app-store#readme",
-    "dependencies": {
-        "axios": "^0.21.1",
-        "form-data": "^4.0.0"
-    }
+  "name": "@xiaobai-world/upload",
+  "version": "0.0.60",
+  "description": "upload to xiaobai store",
+  "main": "./src/index.js",
+  "bin": "./src/index.js",
+  "scripts": {
+    "start": "node index",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Xiaobai-World-Team/upload-to-app-store.git"
+  },
+  "keywords": [
+    "xiaobai",
+    "upload"
+  ],
+  "author": "xiaobai-world-team",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Xiaobai-World-Team/upload-to-app-store/issues"
+  },
+  "homepage": "https://github.com/Xiaobai-World-Team/upload-to-app-store#readme",
+  "dependencies": {
+    "axios": "^0.21.1",
+    "chalk": "^4.1.1",
+    "form-data": "^4.0.0",
+    "prompts": "^2.4.1"
+  }
 }
