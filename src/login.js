@@ -6,6 +6,10 @@ const fs = require("fs");
 const path = require("path");
 const { getHomeDir, getAxiosHeader } = require("./utils");
 
+/**
+ * 登录
+ * @returns {email: string} | null
+ */
 async function login() {
   console.log(chalk.green("Logining in..."));
   const user = (await axios.get(`${base}/user/info`),
