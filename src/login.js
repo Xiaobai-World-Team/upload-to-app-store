@@ -36,8 +36,8 @@ async function login() {
 
   const login = await axios
     .post(`${base}/user/login`, {
-      email: "583912055@qq.com",
-      password: "123123123123",
+      email,
+      password,
     })
     .catch((e) => {
       return e.response;

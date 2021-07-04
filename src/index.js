@@ -1,3 +1,5 @@
+#!/usr/bin/env node
+
 const { login } = require("./login");
 const { buildAndUpload } = require("./upload");
 
