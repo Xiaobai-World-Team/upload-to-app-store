@@ -1,7 +1,6 @@
 #!/usr/bin/env node
-//
-const chalk = require("chalk");
 const utils = require("./utils");
+const { base } = require("./const");
 
 try {
   console.log(
@@ -63,7 +62,7 @@ async function uploadFile(file) {
     form.append("file", fs.createReadStream(file.fullPath));
   }
   try {
-    await axios.post("http://localhost:3001/store/upload", form, {
+    await axios.post(`${base}/store/upload`, form, {
       headers: {
         ...form.getHeaders(),
         ...utils.getAxiosHeader(),
@@ -86,7 +85,7 @@ async function buildAndUpload() {
   // clear the file list of the test enviroment
   try {
     await axios.post(
-      "http://localhost:3001/store/cleanTestApp",
+      `${base}/store/cleanTestApp`,
       {
         version: package.version,
         name: package.name,
@@ -106,7 +105,7 @@ async function buildAndUpload() {
   let pathRes;
   try {
     pathRes = await axios.post(
-      "http://localhost:3001/store/getBasePath",
+      `${base}/store/getBasePath`,
       {
         version: package.version,
         name: package.name,
@@ -158,7 +157,7 @@ async function buildAndUpload() {
   const mainifest = require(path.join(distPath, "manifest.json"));
   try {
     await axios.post(
-      "http://localhost:3001/store/setTestAppEntry",
+      `${base}/store/setTestAppEntry`,
       {
         // report favicon.path, will be used as the icon of the application
         favicon: path.join(pathRes.data, fileList[faviconIdx].relativePath),

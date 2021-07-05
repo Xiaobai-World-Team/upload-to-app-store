@@ -12,16 +12,19 @@ const { getHomeDir, getAxiosHeader } = require("./utils");
  */
 async function login() {
   console.log(chalk.green("Logining in..."));
-  const user = (await axios.get(`${base}/user/info`),
-  {
-    headers: {
-      ...getAxiosHeader(),
-    },
-  }).data;
-
-  if (user && user.email) {
-    return user;
+  try {
+    const user = await axios.get(`${base}/user/info`, {
+      headers: {
+        ...getAxiosHeader(),
+      },
+    });
+    if (user.data && user.data.email) {
+      return user.data;
+    }
+  } catch (e) {
+    // show login ui
   }
+
   const { email } = await prompts({
     type: "text",
     name: "email",
