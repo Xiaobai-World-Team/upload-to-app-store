@@ -144,12 +144,12 @@ async function buildAndUpload() {
   }
 
   const faviconIdx = fileList.findIndex((file) =>
-    /favicon.*(svg|png|gif|ico)$/.test(file.baseName)
+    /favicon.*(svg|png|jpg|webp|avif|gif|ico)$/i.test(file.baseName)
   );
 
   if (faviconIdx < 0) {
     throw new Error(
-      "favicon icon not found. please ensure favicon.svg(also can be png,gif) in src and index.html included it."
+      "favicon icon not found. please ensure favicon.svg(also can be spng|jpg|webp|avif|gif|ico) in src and index.html included it."
     );
   }
 
