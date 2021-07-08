@@ -175,6 +175,7 @@ async function buildAndUpload() {
       }
     );
   } catch (e) {
+    console.error(e)
     console.error(e.response.data);
   }
 }
