@@ -156,6 +156,7 @@ async function buildAndUpload() {
   // check entry
   const mainifest = require(path.join(distPath, "manifest.json"));
   try {
+    const css = mainifest["index.html"].css;
     await axios.post(
       `${base}/store/setTestAppEntry`,
       {
@@ -163,7 +164,9 @@ async function buildAndUpload() {
         favicon: path.join(pathRes.data, fileList[faviconIdx].relativePath),
         // js entry
         jsEntry: path.join(pathRes.data, mainifest["index.html"].file),
-        css: mainifest["index.html"].css.map((p) => path.join(pathRes.data, p)),
+        css: Array.isArray(css)
+          ? css.map((p) => path.join(pathRes.data, p))
+          : [],
         version: package.version,
         name: package.name,
         title: package.title ? package.title : package.name,
@@ -175,8 +178,7 @@ async function buildAndUpload() {
       }
     );
   } catch (e) {
-    console.error(e)
-    console.error(e.response.data);
+    console.error(e);
   }
 }
 
