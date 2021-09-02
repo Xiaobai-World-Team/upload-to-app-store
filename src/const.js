@@ -1,3 +1,5 @@
-const base = "http://localhost:3001";
+const base = process.env.xiaobai_backend
+  ? process.env.xiaobai_backend
+  : "http://www.xiaobai.world/";
 
 module.exports = { base };

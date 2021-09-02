@@ -1,8 +1,13 @@
 const fs = require("fs");
 const path = require("path");
+const { base } = require("./const");
+const { createHash } = require("crypto");
+const hash = createHash(`sha256`);
+hash.update(base);
+const baseHash = hash.digest('hex')
 
 function getHomeDir() {
-  return path.join(process.env.HOME, ".xiaobai-world");
+  return path.join(process.env.HOME, `.xiaobai-world-${baseHash}`);
 }
 
 function getConfig() {
