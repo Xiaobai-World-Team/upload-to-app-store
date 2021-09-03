@@ -3,26 +3,22 @@ const axios = require("axios").default;
 const chalk = require("chalk");
 const { base } = require("./const");
 const fs = require("fs");
-const path = require("path");
-const { getHomeDir, getAxiosHeader } = require("./utils");
+const { getXiaobaiConfigPath, getAxiosHeader } = require("./utils");
 
 /**
  * 登录
  * @returns {email: string} | null
  */
 async function login() {
-  console.log(chalk.green("Logining in..."));
-  try {
-    const user = await axios.get(`${base}/user/info`, {
-      headers: {
-        ...getAxiosHeader(),
-      },
-    });
-    if (user.data && user.data.email) {
-      return user.data;
-    }
-  } catch (e) {
-    // show login ui
+  console.log(chalk.green("Logining in..."), base);
+  const user = await axios.get(`${base}/user/info`, {
+    headers: {
+      ...getAxiosHeader(),
+    },
+  });
+
+  if (user.data && user.data.email) {
+    return user.data;
   }
 
   const { email } = await prompts({
@@ -43,17 +39,17 @@ async function login() {
       password,
     })
     .catch((e) => {
-      return e.response;
+      return e;
     });
 
   if (login.status !== 201) {
-    return null;
+    throw new Error("Login fail");
   }
 
   const cookie = login.headers["set-cookie"][0].split(";")[0];
 
   fs.writeFileSync(
-    path.join(getHomeDir(), "config.json"),
+    getXiaobaiConfigPath(),
     JSON.stringify(
       {
         Cookie: cookie,
